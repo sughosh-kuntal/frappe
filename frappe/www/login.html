@@ -4,11 +4,12 @@
 {% if not disable_user_pass_login or (ldap_settings and ldap_settings.enabled) %}
 <div class="page-card-body">
 	<div class="form-group">
+		<span style="font-size: 0.8em; font-weight: bold;">Enter your GSP Computer windows login user id</span></br>
+		<span style="font-size: 0.8em; font-weight: bold;">अपना GSP कंप्यूटर विंडोज़ लॉगिन यूज़र आईडी टाइप करें</span></br>
 		<label class="form-label sr-only" for="login_email">{{ login_label or _("Email")}}</label>
 		<div class="email-field">
-			<input type="text" id="login_email" class="form-control"
-				placeholder="{% if login_name_placeholder %}{{ login_name_placeholder  }}{% else %}{{ _('jane@example.com') }}{% endif %}"
-				required autofocus autocomplete="username">
+			
+			<input type="text" id="login_email" class="form-control">
 
 			<svg class="field-icon email-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"
 				xmlns="http://www.w3.org/2000/svg">
@@ -18,6 +19,9 @@
 	</div>
 
 	<div class="form-group">
+		<span style="font-size: 0.8em; font-weight: bold;">Your GSP Computer Windows Passsword</span></br>
+		<span style="font-size: 0.8em; font-weight: bold;">अपना GSP कंप्यूटर विंडोज़ पासवर्ड टाइप करें</span></br>
+		
 		<label class="form-label sr-only" for="login_password">{{ _("Password") }}</label>
 		<div class="password-field">
 			<input type="password" id="login_password" class="form-control" placeholder="•••••"
@@ -31,20 +35,29 @@
 		</div>
 	</div>
 
-	<p class="forgot-password-message">
+	<p style="display:none;" class="forgot-password-message">
 		<a href="#forgot">{{ _("Forgot Password?") }}</a>
 	</p>
 </div>
 {% endif %}
 <div class="page-card-actions">
+	{% if ldap_settings and ldap_settings.enabled %}
+	<button class="btn btn-sm btn-primary btn-block btn-login btn-ldap-login">
+		{{ _("Login using GSP Account") }}</button>
+	{% endif %}
+		
+</div>
+<div class="page-card-actions">
+	
 	{% if not disable_user_pass_login %}
-	<button class="btn btn-sm btn-primary btn-block btn-login" type="submit">
+	<p class="forgot-password-message">
+		<span style="font-size: 0.8em; font-weight: bold;">For administrator login use below button</span>
+	</p>
+	
+	<button class="btn btn-sm btn-default btn-block btn-login" type="submit">
 		{{ _("Login") }}</button>
 	{% endif %}
-	{% if ldap_settings and ldap_settings.enabled %}
-	<button class="btn btn-sm btn-default btn-block btn-login btn-ldap-login">
-		{{ _("Login with LDAP") }}</button>
-	{% endif %}
+
 </div>
 {% endmacro %}
 

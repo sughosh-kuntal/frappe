@@ -307,12 +307,29 @@ class LDAPSettings(Document):
 	def authenticate(self, username: str, password: str):
 		if not self.enabled:
 			frappe.throw(_("LDAP is not enabled."))
+		print(f"Attempting to authenticate user: {username}")
+		# Debug: Log the start of the authentication process
+		frappe.logger().debug(f"Attempting to authenticate user: {username}")
 
-		user_filter = self.ldap_search_string.format(username)
+		# Escape the username to handle special characters in CN (like parentheses)
+		escaped_username = escape_filter_chars(username)
+		frappe.logger().debug(f"Escaped username: {escaped_username}")
+		print(f"Escaped username: {escaped_username}")
+  
+		user_filter = self.ldap_search_string.format(escaped_username)
+		frappe.logger().debug(f"user_filter: {user_filter}")
+		print(f"user_filter: {user_filter}")
+  
 		ldap_attributes = self.get_ldap_attributes()
+		frappe.logger().debug(f"ldap_attributes: {ldap_attributes}")
+		print(f"ldap_attributes: {ldap_attributes}")
+
 		conn = self.connect_to_ldap(self.base_dn, self.get_password(raise_exception=False))
 
 		try:
+			# Perform the search query to find the user
+			frappe.logger().debug(f"Searching LDAP for user: {escaped_username}")
+        
 			conn.search(
 				search_base=self.ldap_search_path_user,
 				search_filter=f"{user_filter}",
@@ -403,9 +420,9 @@ def login():
 	# LDAP LOGIN LOGIC
 	args = frappe.form_dict
 	ldap: LDAPSettings = frappe.get_doc("LDAP Settings")
+	frappe.logger().debug(f"user arg: {args.usr}")
 
 	user = ldap.authenticate(frappe.as_unicode(args.usr), frappe.as_unicode(args.pwd))
-
 	frappe.local.login_manager.user = user.name
 	if should_run_2fa(user.name):
 		authenticate_for_2factor(user.name)
