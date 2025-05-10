@@ -278,7 +278,13 @@ def add_years(date, years):
 	return add_to_date(date, years=years)
 
 
-def date_diff(string_ed_date, string_st_date):
+def date_diff(string_ed_date: DateTimeLikeObject, string_st_date: DateTimeLikeObject) -> int:
+	"""Returns the difference between given two dates in days."""
+	return days_diff(string_ed_date, string_st_date)
+
+
+def days_diff(string_ed_date: DateTimeLikeObject, string_st_date: DateTimeLikeObject) -> int:
+	"""Returns the difference between given two dates in days."""
 	return (getdate(string_ed_date) - getdate(string_st_date)).days
 
 
@@ -1910,6 +1916,11 @@ def sanitize_column(column_name: str) -> None:
 
 			# to avoid select, delete, drop, update and case
 			elif any(keyword in column_name.split() for keyword in blacklisted_keywords):
+				_raise_exception()
+
+			elif any(
+				re.search(rf"\b{keyword}\b", column_name, re.IGNORECASE) for keyword in blacklisted_keywords
+			):
 				_raise_exception()
 
 	elif regex.match(column_name):
